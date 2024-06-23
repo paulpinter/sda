@@ -33,6 +33,6 @@ def decompose(
     t = smallest_subset(graph[ordering[0]], bags)
     tMark = len(tree) + 1
     bags[tMark] = graph[ordering[0]] | {ordering[0]}
-    tree[tMark] = {t}
+    tree[tMark] = set()
     tree[t] = tree[t] | {tMark}
     return tree, bags
