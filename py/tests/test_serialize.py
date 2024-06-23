@@ -1,4 +1,8 @@
-from serialize import graph_to_lab, tree_decompostion_to_lab
+from serialize import (
+    graph_to_lab,
+    ordering_to_space_separated_string,
+    tree_decompostion_to_lab,
+)
 
 
 def test_graph_to_lab():
@@ -14,3 +18,8 @@ def test_tree_decomposition_to_lab():
         "N1,,1;2",
         "N2,,2;3",
     ]
+
+
+def test_ordering_to_space_separated_string():
+    ordering = [1, 2, 3]
+    assert ordering_to_space_separated_string(ordering) == "1 2 3"
