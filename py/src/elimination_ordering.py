@@ -1,6 +1,7 @@
+# assumes that that the graph has no self loops
 def min_degree(graph) -> list[int]:
     """
-    Compute the minimum degree ordering of the graph.
+    Compute the minimum degree elimination ordering of the graph.
     """
     # TODO: what about self loops?
     ordering = []
@@ -14,6 +15,34 @@ def min_degree(graph) -> list[int]:
                 min_degree = degree
                 min_node = node
             elif degree == min_degree:
+                # Break ties by choosing the node with the smallest label
+                min_node = min(min_node, node)
+
+        # Add the node to the ordering
+        ordering.append(min_node)
+        # Remove the node from the graph
+        _add_fill_in_edges(g, min_node, g[min_node])
+    return ordering
+
+
+def min_fill_in(graph: dict[int, set[int]]) -> list[int]:
+    """
+    Compute the minimum fill-in elimination ordering of the graph.
+    """
+    ordering = []
+    g = graph.copy()
+    while g:
+        # Find the node with the minimum fill-in
+        min_fill_in = float("inf")
+        for node in g:
+            neighbors = g[node]
+            fill_in = 0
+            for neighbor in neighbors:
+                fill_in += len(neighbors & g[neighbor]) - 1
+            if fill_in < min_fill_in:
+                min_fill_in = fill_in
+                min_node = node
+            elif fill_in == min_fill_in:
                 # Break ties by choosing the node with the smallest label
                 min_node = min(min_node, node)
 
@@ -38,5 +67,5 @@ def _add_fill_in_edges(
         graph[neighbor].remove(vertex_to_remove)
         # remove self loop
         graph[neighbor].remove(neighbor)
-        del graph[vertex_to_remove]
+    del graph[vertex_to_remove]
     return graph
