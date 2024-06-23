@@ -1,9 +1,10 @@
 # assumes that that the graph has no self loops
-def min_degree(graph: dict[int, set[int]]) -> list[int]:
+def min_degree(graph: dict[int, set[int]]) -> tuple[list[int], int]:
     """
     Compute the minimum degree elimination ordering of the graph.
     """
     ordering = []
+    width = 0
     g = graph.copy()
     while g:
         # Find the node with the minimum degree
@@ -20,16 +21,18 @@ def min_degree(graph: dict[int, set[int]]) -> list[int]:
         # Add the node to the ordering
         ordering.append(candidate)
         # Remove the node from the graph
-        _add_fill_in_edges(g, candidate, g[candidate])
-    return ordering
+        g, degree = _add_fill_in_edges(g, candidate, g[candidate])
+        width = max(width, degree)
+    return ordering, width
 
 
-def min_fill_in(graph: dict[int, set[int]]) -> list[int]:
+def min_fill_in(graph: dict[int, set[int]]) -> tuple[list[int], int]:
     """
     Compute the minimum fill-in elimination ordering of the graph.
     """
     ordering = []
     g = graph.copy()
+    width = -1
     while g:
         # Find the node with the minimum fill-in
         min_fill_in = float("inf")
@@ -40,16 +43,17 @@ def min_fill_in(graph: dict[int, set[int]]) -> list[int]:
                 fill_in += len(neighbors & g[neighbor]) - 1
             if fill_in < min_fill_in:
                 min_fill_in = fill_in
-                candiate = node
+                candidate = node
             elif fill_in == min_fill_in:
                 # Break ties by choosing the node with the smallest label
-                candiate = min(candiate, node)
+                candidate = min(candidate, node)
 
         # Add the node to the ordering
-        ordering.append(candiate)
+        ordering.append(candidate)
         # Remove the node from the graph
-        _add_fill_in_edges(g, candiate, g[candiate])
-    return ordering
+        g, degree = _add_fill_in_edges(g, candidate, g[candidate])
+        width = max(width, degree)
+    return ordering, width
 
 
 def max_cardinality(graph: dict[int, set[int]]) -> list[int]:
@@ -60,7 +64,7 @@ def max_cardinality(graph: dict[int, set[int]]) -> list[int]:
     g = graph.copy()
     # create a new dict with keys of g and values with 0
     for i in g:
-        max_cardinality = -float("inf")
+        max_cardinality = -1
         for k in g:
             if k not in ordering:
                 cardinality = len(g[k] & set(ordering))
@@ -75,7 +79,7 @@ def max_cardinality(graph: dict[int, set[int]]) -> list[int]:
 
 def _add_fill_in_edges(
     graph: dict[int, set[int]], vertex_to_remove: int, neighbors: set[int]
-) -> dict[int, set[int]]:
+) -> tuple[dict[int, set[int]], int]:
     """
     Add fill-in edges to the graph.
     """
@@ -88,4 +92,4 @@ def _add_fill_in_edges(
         # remove self loop
         graph[neighbor].remove(neighbor)
     del graph[vertex_to_remove]
-    return graph
+    return graph, len(neighbors)
