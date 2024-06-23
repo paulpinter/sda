@@ -16,7 +16,8 @@ def parse(path: str) -> dict:
             # add the vertex for the first time
             if source not in graph:
                 graph[source] = set()
-            if row[1].isdigit() is True:
+            # ignore self loops as they don't add tree width
+            if row[1].isdigit() is True and row[0] != row[1]:
                 target = int(row[1])
                 # add the edge to the vertex adjecency lis
                 graph[source].add(target)

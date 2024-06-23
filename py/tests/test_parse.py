@@ -4,6 +4,6 @@ import os
 from parse import parse
 
 
-def test_sum():
+def test_parse():
     g = parse("./data/graph.csv")
     assert g == {1: {2}, 2: {1, 3}, 3: {2}}
