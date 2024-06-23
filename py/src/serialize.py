@@ -22,3 +22,10 @@ def tree_decompostion_to_lab(
     for node, bag in bags.items():
         dump.append(f"N{node},,{';'.join(map(str, bag))}")
     return dump
+
+
+def ordering_to_space_separated_string(ordering: list[int]) -> str:
+    """
+    Convert an ordering to a space-separated string.
+    """
+    return " ".join(map(str, ordering))
