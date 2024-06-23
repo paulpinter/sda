@@ -3,7 +3,6 @@ def min_degree(graph: dict[int, set[int]]) -> list[int]:
     """
     Compute the minimum degree elimination ordering of the graph.
     """
-    # TODO: what about self loops?
     ordering = []
     g = graph.copy()
     while g:
