@@ -1,5 +1,5 @@
 # assumes that that the graph has no self loops
-def min_degree(graph) -> list[int]:
+def min_degree(graph: dict[int, set[int]]) -> list[int]:
     """
     Compute the minimum degree elimination ordering of the graph.
     """
