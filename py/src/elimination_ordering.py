@@ -1,3 +1,4 @@
+# assumes that that the graph has no self loops
 def min_degree(graph) -> list[int]:
     """
     Compute the minimum degree ordering of the graph.
@@ -38,5 +39,5 @@ def _add_fill_in_edges(
         graph[neighbor].remove(vertex_to_remove)
         # remove self loop
         graph[neighbor].remove(neighbor)
-        del graph[vertex_to_remove]
+    del graph[vertex_to_remove]
     return graph
