@@ -24,11 +24,11 @@ def tree_decompostion_to_lab(
     return dump
 
 
-def ordering_to_space_separated_string(ordering: list[int]) -> str:
+def ordering_to_space_separated_string(ordering: list[int]) -> list[str]:
     """
     Convert an ordering to a space-separated string.
     """
-    return " ".join(map(str, ordering))
+    return [" ".join(map(str, ordering))]
 
 
 def store_in_file(path: str, dump: list[str]) -> None:
