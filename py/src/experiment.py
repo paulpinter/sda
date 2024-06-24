@@ -4,8 +4,8 @@ from parse import parse
 from serialize import graph_to_lab, ordering_to_space_separated_string, store_in_file
 import time
 
-node = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-prob = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+node = [10, 20, 30, 40, 50, 75, 100, 250, 500, 1000]
+prob = [0.1, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75, 0.8, 0.9, 0.95]
 
 
 def generate_graphs():
@@ -14,10 +14,6 @@ def generate_graphs():
             graph = erdos_renyi_graph(n, p, 42)
             dump = graph_to_lab(graph)
             store_in_file(f"data/graph_{n}_{p}.csv", dump)
-
-    graph = erdos_renyi_graph(100, 0.5, 42)
-    dump = graph_to_lab(graph)
-    store_in_file("data/graph.csv", dump)
 
 
 def experiment(path, heuristic):
@@ -47,6 +43,8 @@ def max_cardinality_experiment():
 
 
 if __name__ == "__main__":
-    min_fill_experiment()
+    # generate_graphs()
+    # min_fill_experiment()
     # max_cardinality_experiment()
     # min_degree_experiment()
+    pass
