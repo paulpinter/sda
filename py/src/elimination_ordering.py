@@ -56,12 +56,13 @@ def min_fill_in(graph: dict[int, set[int]]) -> tuple[list[int], int]:
     return ordering, width
 
 
-def max_cardinality(graph: dict[int, set[int]]) -> list[int]:
+def max_cardinality(graph: dict[int, set[int]]) -> tuple[list[int], int]:
     """
     Compute the maximum cardinality elimination ordering of the graph.
     """
     ordering = []
     g = graph.copy()
+    width = -1
     # create a new dict with keys of g and values with 0
     for i in g:
         max_cardinality = -1
@@ -73,8 +74,14 @@ def max_cardinality(graph: dict[int, set[int]]) -> list[int]:
                     candidate = k
                 elif cardinality == max_cardinality:
                     candidate = min(candidate, k)
+        width = max(width, max_cardinality)
         ordering.insert(0, candidate)
-    return ordering
+
+    # calcualte width
+    for i in range(len(ordering)):
+        g, degree = _add_fill_in_edges(g, ordering[i], g[ordering[i]])
+        width = max(width, degree)
+    return ordering, width
 
 
 def _add_fill_in_edges(
