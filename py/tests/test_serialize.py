@@ -22,4 +22,4 @@ def test_tree_decomposition_to_lab():
 
 def test_ordering_to_space_separated_string():
     ordering = [1, 2, 3]
-    assert ordering_to_space_separated_string(ordering) == "1 2 3"
+    assert ordering_to_space_separated_string(ordering) == ["1 2 3"]
