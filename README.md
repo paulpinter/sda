@@ -70,5 +70,4 @@ The outcome of the experiments can be seen in the following files:
 The runtime of the min-fill heuristic was by far the longest.
 Significant improvements were achieved by using fill-in statistics and only updating the statistics for the neighbors of the elimination candidate. If the candidate caused 0 fill-in edges, no update occurred. This decreased the runtime by a magnitude of 10.
 Additionally, running the experiments using the PyPy JIT compiler provided a speedup of approximately 100%.
-The results highlight the importance of heuristic selection and optimization techniques in the efficiency of tree decomposition algorithms.
 
