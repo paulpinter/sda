@@ -24,12 +24,6 @@ The script is implemented exclusively with Python's standard library, except for
 - **Serialization**: Functions to format and store the output.
 
 ## Usage
-To use this tool, run the script with the required arguments and options.
-
-```bash
-python script.py <input> [options]
-```
-
 ### Positional Arguments
 - `input`: The input graph
 
