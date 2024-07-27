@@ -35,7 +35,7 @@ def min_degree_experiment():
 
 
 def min_fill_experiment():
-    experiment("data/min_fill.csv", min_fill_in)
+    experiment("data/min_fill_2.csv", min_fill_in)
 
 
 def max_cardinality_experiment():

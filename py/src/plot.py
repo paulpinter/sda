@@ -30,10 +30,11 @@ def calculate_statistics(dataframes, heuristics):
     for df, heuristic in zip(dataframes, heuristics):
         avg_width = df["width"].mean()
         median_width = df["width"].median()
+        total_time = df["time"].sum()
         print(
-            f"Heuristic: {heuristic}, Average Width: {avg_width}, Median Width: {median_width}"
+            f"Heuristic: {heuristic}, Average Width: {avg_width}, Median Width: {median_width},Total Time: {total_time}"
         )
-        dump.append(f"{heuristic},{avg_width},{median_width}")
+        dump.append(f"{heuristic},{avg_width},{median_width},{total_time}")
     store_in_file("data/width_statistics.csv", dump)
 
 
@@ -42,12 +43,14 @@ if __name__ == "__main__":
     files = [
         "data/min_degree.csv",
         "data/min_fill.csv",
+        "data/min_fill_2.csv",
         "data/max_cardinality.csv",
     ]  # replace with your actual filenames
 
     # Define heuristics
     heuristics = [
         "min fill in",
+        "min fill in 2",
         "min degree",
         "max cardinality",
     ]  # replace with actual heuristic names
@@ -56,7 +59,7 @@ if __name__ == "__main__":
     dataframes = load_data(files)
 
     # Generate pairwise comparison plots
-    pairwise_comparison_plots(dataframes, heuristics)
+    # pairwise_comparison_plots(dataframes, heuristics)
 
     # Calculate and print average and median widths
     calculate_statistics(dataframes, heuristics)

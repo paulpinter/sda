@@ -1,3 +1,6 @@
+import copy
+
+
 # assumes that that the graph has no self loops
 def min_degree(graph: dict[int, set[int]]) -> tuple[list[int], int]:
     """
@@ -5,7 +8,7 @@ def min_degree(graph: dict[int, set[int]]) -> tuple[list[int], int]:
     """
     ordering = []
     width = 0
-    g = graph.copy()
+    g = copy.deepcopy(graph)
     while g:
         # Find the node with the minimum degree
         min_degree = float("inf")
@@ -31,54 +34,81 @@ def min_fill_in(graph: dict[int, set[int]]) -> tuple[list[int], int]:
     Compute the minimum fill-in elimination ordering of the graph.
     """
     ordering = []
-    g = graph.copy()
+    g = copy.deepcopy(graph)
     width = -1
 
-    fill_in_dict = {node: _calc_fill_in(g, node) for node in g}
+    fill_in_count = {}
+    fill_in_stat = {}
+    for node in g:
+        fill_in_result = _calc_fill_in(g, node)
+        fill_in_count[node] = fill_in_result[0]
+        fill_in_stat[node] = fill_in_result[1]
+
     while g:
         # Find the node with the minimum fill-in
-        min_fill_in = float("inf")
-        for node in fill_in_dict:
-            if fill_in_dict[node] < min_fill_in:
-                min_fill_in = fill_in_dict[node]
-                candidate = node
-            elif fill_in_dict[node] == min_fill_in:
-                # Break ties by choosing the node with the smallest label
-                candidate = min(candidate, node)
+        selected_node, min_fill_in = min(
+            [(node, count) for node, count in fill_in_count.items()],
+            key=lambda x: (x[1], x[0]),
+        )
         # Add the node to the ordering
-        ordering.append(candidate)
-        # Remove the node from the graph
-        # g, degree = _add_fill_in_edges(g, candidate, g[candidate])
+        ordering.append(selected_node)
+        # add fill in edges
+        for fill_in_source, fill_in_targets in fill_in_stat[selected_node].items():
+            g[fill_in_source] |= fill_in_targets
 
-        neighbors = g[candidate]
-        for neighbor in neighbors:
-            # add fill in edges
-            g[neighbor] |= g[candidate]
-            # update fill in dict
-            # remove the node from the neighbor's adjacency list
-            g[neighbor].remove(candidate)
-            # remove self loop
-            g[neighbor].remove(neighbor)
-        del g[candidate]
-        if fill_in_dict[candidate] != 0:
-            for neighbor in neighbors:
-                fill_in_dict[neighbor] = _calc_fill_in(g, neighbor)
-        width = max(width, len(neighbors))
+        for _, targets in g.items():
+            if selected_node in targets:
+                targets.remove(selected_node)
 
-        del fill_in_dict[candidate]
+        # You want to remove 3 things
+        for node, fill_in_dict in fill_in_stat.items():
+            if node == selected_node:
+                continue
+            # The source node in a fill in statistics if found -> reduce stat by lenght of set
+            if selected_node in fill_in_dict:
+                fill_in_count[node] -= len(fill_in_dict[selected_node])
+                del fill_in_dict[selected_node]
+            # remove source node from statistics
+            if selected_node in fill_in_dict:
+                fill_in_count[node] -= len(targets)
+                del fill_in_dict[source]
+
+            for source, targets in fill_in_dict.items():
+                if selected_node in targets:
+                    fill_in_count[node] -= 1
+                    targets.remove(selected_node)
+
+            # remove the new edges from the statistic
+            for fill_in_source, fill_in_targets in fill_in_stat[selected_node].items():
+                for fill_in_target in fill_in_targets:
+                    if fill_in_source in fill_in_dict:
+                        if fill_in_target in fill_in_dict[fill_in_source]:
+                            fill_in_dict[fill_in_source].remove(fill_in_target)
+                            fill_in_count[node] -= 1
+
+        neighbours = g[selected_node]
+        width = max(width, len(neighbours))
+        del fill_in_stat[selected_node]
+        del fill_in_count[selected_node]
+        del g[selected_node]
 
     return ordering, width
 
 
-def _calc_fill_in(graph: dict[int, set[int]], node: int) -> int:
+def _calc_fill_in(
+    graph: dict[int, set[int]], node: int
+) -> tuple[int, dict[int, set[int]]]:
     """
     Calculate the fill-in of a node.
     """
-    fill_in = 0
+    fill_in_dict = {}
     neighbors = graph[node]
+    fill_in_edges_count = 0
     for neighbor in neighbors:
-        fill_in += len(neighbors - graph[neighbor] - {neighbor})
-    return fill_in
+        fill_in = neighbors - graph[neighbor] - {neighbor}
+        fill_in_dict[neighbor] = fill_in
+        fill_in_edges_count += len(fill_in)
+    return [fill_in_edges_count, fill_in_dict]
 
 
 def max_cardinality(graph: dict[int, set[int]]) -> tuple[list[int], int]:
@@ -86,7 +116,7 @@ def max_cardinality(graph: dict[int, set[int]]) -> tuple[list[int], int]:
     Compute the maximum cardinality elimination ordering of the graph.
     """
     ordering = []
-    g = graph.copy()
+    g = copy.deepcopy(graph)
     width = -1
     # create a new dict with keys of g and values with 0
     for i in g:
